@@ -196,6 +196,7 @@ async def main():
 
 
         # Идём на метеору и Подключаем кошелёк
+        
         page3 = await context.new_page()
         await page3.wait_for_load_state()
         async def connect_wallet(page):
@@ -233,6 +234,7 @@ async def main():
 
 
         # ТЕСТОВАЯ работа с сайтом, поиск пула
+        
         inputs = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div[2]/div/div[1]/div/div/input')
         await expect(inputs.first).to_be_visible(timeout=20000)
         await inputs.first.type('jlp', delay=DEFAULT_DELAY)
@@ -249,12 +251,12 @@ async def main():
         await my_pool.click()
         add_pos = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[2]/span')                   # Кнопка создать позицию
         await add_pos.click()
+        auto_fill = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div[1]/div[1]/div/div/button')
+        await auto_fill.click()
         jlp_lykv = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div[1]/div[2]/div[1]/div[1]/input')
         await jlp_lykv.click()
         max_btn = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]')
         await max_btn.click()
-
-
 
         await asyncio.sleep(5555555)
         await context.close()
@@ -262,3 +264,5 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
+
+
