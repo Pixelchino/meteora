@@ -226,26 +226,36 @@ async def main():
                 await solflare_popup.close()
             else:
                 print("Не удалось найти всплывающее окно solflare.")
-            await asyncio.sleep(2)
+            await asyncio.sleep(3)
 
 
         await connect_wallet(page3)
 
 
         # ТЕСТОВАЯ работа с сайтом, поиск пула
-        inputs = page.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div[2]/div/div[1]/div/div/input')
+        inputs = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div[2]/div/div[1]/div/div/input')
         await expect(inputs.first).to_be_visible(timeout=20000)
         await inputs.first.type('jlp', delay=DEFAULT_DELAY)
         await asyncio.sleep(2)
         try:
-            inputs2 = page.get_by_text('JLP-USDT', exact=True)
+            inputs2 = page3.get_by_text('JLP-USDT', exact=True)
             await expect(inputs2.first).to_be_visible()
             await inputs2.first.scroll_into_view_if_needed()
             await inputs2.first.click()
         except Exception as e:
             print(f'Искомой пары нет: {e}')
             await context.close()
-            print('ОК!!!')
+        my_pool = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div[2]/div/div[4]/div/div[1]/div/div/div[3]/div[2]/div/a[1]')   # Первый пул
+        await my_pool.click()
+        add_pos = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[1]/div[1]/div[2]/span')                   # Кнопка создать позицию
+        await add_pos.click()
+        jlp_lykv = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div[1]/div[2]/div[1]/div[1]/input')
+        await jlp_lykv.click()
+        max_btn = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div[1]/div[2]/div[1]/div[2]/div[2]/div[2]')
+        await max_btn.click()
+
+
+
         await asyncio.sleep(5555555)
         await context.close()
         print('ОК!!!')
