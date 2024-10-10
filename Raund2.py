@@ -55,122 +55,122 @@ async def main():
         # -------------------- Идём на другую страницу --------------------
         mm_page_0 = context.pages[0]
 
-        # Идём на юпитер и конектим кошелёк
-        async def ballance_wallet(page):
-            await page.bring_to_front()
-            await page.goto(jup_swap_url)
-            walconect = page.locator('//*[@id="__next"]/div[2]/div[1]/div/div[4]/div[3]/div/button[2]/div/span[2]')   # Подключить кошелёк
-            await walconect.click()
-            butnconect = page.get_by_text('Solflare')
-            await butnconect.click()
-            await asyncio.sleep(4)
-            pages = page.context.pages
-            solflare_page = None
-            for p in pages:
-                if 'confirm_popup.html' in p.url:
-                    solflare_page = p
-                    break
-            if solflare_page:
-                await solflare_page.bring_to_front()
-                await solflare_page.locator('//html/body/div[2]/div[2]/div/div[3]/div/button[2]').click()   # Подтвердить
-            else:
-                print("Не удалось найти всплывающее окно solflare.")
-            await asyncio.sleep(5)
-            # Проверяем баланс соланы
-            token_1 = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div['
-                                   '1]/div[2]/div/button/div[2]')  # первое поле для токена
-            await token_1.click()
-            await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')    # первое поле для токена вводится адрес usdt
-            await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()                   # клик по usdt
-            token_2 = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div['
-                                   '3]/div[2]/div/button/div[2]')  # второе поле для токена
-            await token_2.click()
-            await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill('So11111111111111111111111111111111111111112')     # во второе поле для токена вводится адрес sol
-            await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()                   # клик по sol
-
-            ballance_sol_1 =await page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div['
-                                               '1]/div[3]/div[1]/div/div[2]/span[1]').inner_text()  # Парсим баланс sol
-            ballance_sol = (float(ballance_sol_1.replace(',','.')))
-
-            ballance_usdt_1 = await page.locator(
-                '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[1]/div[1]/div/div['
-                '1]/div[2]/span[1]').inner_text()                    # Парсим баланс usdt
-            ballance_usdt = (float(ballance_usdt_1.replace(',', '.')))
-
-            print(ballance_sol)
-            print(ballance_usdt)
-            # Если соланы меньше 0.09 и usdt > 2, то докупаем sol на 2$
-            if ballance_sol < 0.09 and ballance_usdt > 2:
-                await page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div['
-                                   '1]/div[2]/span/div/input').fill('2')
-                but_swp = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[4]/button')
-                await expect(but_swp).to_be_visible()
-                await but_swp.click()
-                await asyncio.sleep(3)
-                pages = page.context.pages
-                solflare_page = None
-                for p in pages:
-                    if 'confirm_popup.html' in p.url:
-                        solflare_page = p
-                        break
-                if solflare_page:
-                    await solflare_page.bring_to_front()
-                    await asyncio.sleep(3)
-                    await solflare_page.locator('//html/body/div[2]/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/button[2]').click()   # Подтвердить транзу
-                else:
-                    print("Не удалось найти всплывающее окно solflare.")
-                await asyncio.sleep(5)
-
-            # Проверяем баланс jlp
-
-            token_1 = page.locator(
-                '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[1]/div[2]/div/button/div[2]')
-            await token_1.click()
-            await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill(
-                'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')
-            await page.locator(
-                '//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()
-            token_2 = page.locator(
-                '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[3]/div[2]/div/button/div[2]')
-            await token_2.click()
-            await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill(
-                '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4')
-            await page.locator(
-                '//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()
-
-            ballance_jlp_1 =  page.locator(
-                '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[3]/div[1]/div/div[2]/span[1]')
-            ballance_jlp_2 = await ballance_jlp_1.inner_text()
-            ballance_jlp = (float(ballance_jlp_2.replace(',', '.')))
-            print(ballance_jlp)
-
-            # Если jlp меньше 5 и usdt > 2, то докупаем jlp на 2$
-
-            if ballance_jlp < 5 and ballance_usdt > 2:
-                await page.locator(
-                    '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[1]/div['
-                    '2]/span/div/input').fill('2')
-                butn_swp = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[4]/button')
-                await expect(butn_swp).to_be_visible()
-                await butn_swp.click()
-                await asyncio.sleep(3)
-                pages = page.context.pages
-                solflare_page = None
-                for p in pages:
-                    if 'confirm_popup.html' in p.url and p.url != page.url:
-                        solflare_page = p
-                        break
-                if solflare_page:
-                    await solflare_page.bring_to_front()
-                    await asyncio.sleep(3)
-                    await solflare_page.locator(
-                        '//html/body/div[2]/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/button[2]').click(click_count=2)  # Кнопка подтверждения транзы
-                else:
-                    print("Не удалось найти всплывающее окно solflare.")
-                await asyncio.sleep(5)
-
-        page = mm_page_0
-        await ballance_wallet(page)
+        # # Идём на юпитер и конектим кошелёк
+        # async def ballance_wallet(page):
+        #     await page.bring_to_front()
+        #     await page.goto(jup_swap_url)
+        #     walconect = page.locator('//*[@id="__next"]/div[2]/div[1]/div/div[4]/div[3]/div/button[2]/div/span[2]')   # Подключить кошелёк
+        #     await walconect.click()
+        #     butnconect = page.get_by_text('Solflare')
+        #     await butnconect.click()
+        #     await asyncio.sleep(4)
+        #     pages = page.context.pages
+        #     solflare_page = None
+        #     for p in pages:
+        #         if 'confirm_popup.html' in p.url:
+        #             solflare_page = p
+        #             break
+        #     if solflare_page:
+        #         await solflare_page.bring_to_front()
+        #         await solflare_page.locator('//html/body/div[2]/div[2]/div/div[3]/div/button[2]').click()   # Подтвердить
+        #     else:
+        #         print("Не удалось найти всплывающее окно solflare.")
+        #     await asyncio.sleep(5)
+        #     # Проверяем баланс соланы
+        #     token_1 = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div['
+        #                            '1]/div[2]/div/button/div[2]')  # первое поле для токена
+        #     await token_1.click()
+        #     await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')    # первое поле для токена вводится адрес usdt
+        #     await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()                   # клик по usdt
+        #     token_2 = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div['
+        #                            '3]/div[2]/div/button/div[2]')  # второе поле для токена
+        #     await token_2.click()
+        #     await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill('So11111111111111111111111111111111111111112')     # во второе поле для токена вводится адрес sol
+        #     await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()                   # клик по sol
+        #
+        #     ballance_sol_1 =await page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div['
+        #                                        '1]/div[3]/div[1]/div/div[2]/span[1]').inner_text()  # Парсим баланс sol
+        #     ballance_sol = (float(ballance_sol_1.replace(',','.')))
+        #
+        #     ballance_usdt_1 = await page.locator(
+        #         '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[1]/div[1]/div/div['
+        #         '1]/div[2]/span[1]').inner_text()                    # Парсим баланс usdt
+        #     ballance_usdt = (float(ballance_usdt_1.replace(',', '.')))
+        #
+        #     print(ballance_sol)
+        #     print(ballance_usdt)
+        #     # Если соланы меньше 0.09 и usdt > 2, то докупаем sol на 2$
+        #     if ballance_sol < 0.09 and ballance_usdt > 2:
+        #         await page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div['
+        #                            '1]/div[2]/span/div/input').fill('2')
+        #         but_swp = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[4]/button')
+        #         await expect(but_swp).to_be_visible()
+        #         await but_swp.click()
+        #         await asyncio.sleep(3)
+        #         pages = page.context.pages
+        #         solflare_page = None
+        #         for p in pages:
+        #             if 'confirm_popup.html' in p.url:
+        #                 solflare_page = p
+        #                 break
+        #         if solflare_page:
+        #             await solflare_page.bring_to_front()
+        #             await asyncio.sleep(3)
+        #             await solflare_page.locator('//html/body/div[2]/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/button[2]').click()   # Подтвердить транзу
+        #         else:
+        #             print("Не удалось найти всплывающее окно solflare.")
+        #         await asyncio.sleep(5)
+        #
+        #     # Проверяем баланс jlp
+        #
+        #     token_1 = page.locator(
+        #         '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[1]/div[2]/div/button/div[2]')
+        #     await token_1.click()
+        #     await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill(
+        #         'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')
+        #     await page.locator(
+        #         '//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()
+        #     token_2 = page.locator(
+        #         '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[3]/div[2]/div/button/div[2]')
+        #     await token_2.click()
+        #     await page.locator('//*[@id="__next"]/div[3]/div[1]/div/div/div[1]/input').fill(
+        #         '27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4')
+        #     await page.locator(
+        #         '//*[@id="__next"]/div[3]/div[1]/div/div/div[4]/div/div/div/li/div[2]/div[2]/div[1]').click()
+        #
+        #     ballance_jlp_1 =  page.locator(
+        #         '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[3]/div[1]/div/div[2]/span[1]')
+        #     ballance_jlp_2 = await ballance_jlp_1.inner_text()
+        #     ballance_jlp = (float(ballance_jlp_2.replace(',', '.')))
+        #     print(ballance_jlp)
+        #
+        #     # Если jlp меньше 5 и usdt > 2, то докупаем jlp на 2$
+        #
+        #     if ballance_jlp < 5 and ballance_usdt > 2:
+        #         await page.locator(
+        #             '//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[1]/div[1]/div['
+        #             '2]/span/div/input').fill('2')
+        #         butn_swp = page.locator('//*[@id="__next"]/div[2]/div[3]/div[2]/div[2]/div[2]/div[2]/form/div[4]/button')
+        #         await expect(butn_swp).to_be_visible()
+        #         await butn_swp.click()
+        #         await asyncio.sleep(3)
+        #         pages = page.context.pages
+        #         solflare_page = None
+        #         for p in pages:
+        #             if 'confirm_popup.html' in p.url and p.url != page.url:
+        #                 solflare_page = p
+        #                 break
+        #         if solflare_page:
+        #             await solflare_page.bring_to_front()
+        #             await asyncio.sleep(3)
+        #             await solflare_page.locator(
+        #                 '//html/body/div[2]/div[2]/div/div[2]/div/div[2]/div[2]/div[2]/button[2]').click(click_count=2)  # Кнопка подтверждения транзы
+        #         else:
+        #             print("Не удалось найти всплывающее окно solflare.")
+        #         await asyncio.sleep(5)
+        #
+        # page = mm_page_0
+        # await ballance_wallet(page)
 
 
         # Идём на метеору и Подключаем кошелёк
@@ -195,6 +195,7 @@ async def main():
                     break
             if solflare_page:
                 await solflare_page.bring_to_front()
+                await asyncio.sleep(2)
                 await solflare_page.locator('//html/body/div[2]/div[2]/div/div[3]/div/button[2]').click(click_count=2)
                 await solflare_page.close()
             else:
@@ -225,11 +226,20 @@ async def main():
                                   '1]/div[1]/div/div/button').click()                  # Отключить auto_fill
         await page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div['
                                     '1]/div[2]/div[1]/div[2]/div[2]/div[2]').click()   # Клик на ввод max jlp
+        min_price = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div['
+                                  '3]/div[2]/div/div[3]/div[1]/div/input[2]')          # Минимальный процент
+        await min_price.click(click_count=2)
+        await min_price.press('Backspace')
+        await min_price.fill('0')
+        max_price = page3.locator('//*[@id="__next"]/div[1]/div[5]/div/div[2]/div/div[2]/div[2]/div[2]/form/div['
+                                  '3]/div[2]/div/div[3]/div[2]/div/input[2]')  # Минимальный процент
+        await max_price.click(click_count=2)
+        await max_price.press('Backspace')
+        await max_price.fill('2.5')
+
 
         print('ОК!!!')
         await asyncio.sleep(5555555)
         await context.close()
 if __name__ == '__main__':
     asyncio.run(main())
-
-
