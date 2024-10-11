@@ -156,7 +156,7 @@ async def main():
 
             # Проверяем баланс jlp
 
-            await swap('usdt', 'jlp', page
+            await swap('usdt', 'jlp', page)
 
             # Если jlp меньше 5 и usdt > 2, то докупаем jlp на 2$
             if ballance_coin2 < 5 and ballance_coin1 > 2:
